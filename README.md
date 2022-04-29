@@ -18,7 +18,7 @@ Previously we scaffolded a new Angular application in which we have integrated
 * There is an login component with login button which calls the authorization service for login functionality. 
 * There is an Toolbar Component with logout button  which calls the authorization service for logout functionality.  
 * Angular Materials SideNav having links which are navigating to these components
-* Client side authorization using Auth Guard which is used to protect the routes.
+* Client side authorization using Auth Guard to protect the routes.
 * Show & Hide Side Nav links based on the logged in User's role.
 * We have already registered 2 apps in azure portal(BBankUI and BBankAPI), Created App Roles in BBankAPI, assigned them to users and exposed the API
 through a default scope and set permission of this API to BBankUI App
