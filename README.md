@@ -50,7 +50,7 @@ For more details about how to setup the active directory configurations in Azure
  ```
 
  ## Step 2: Setting Up Environment variable
- We will configure the app registration, clientID and other values in environment.ts as below :
+ We will configure the app registration, clientID and other values in `environment.ts` as below :
 
  ```ts
 export const environment = {
