@@ -14,7 +14,7 @@ Previously we scaffolded a new Angular application in which we have integrated
 * FontAwesome Library for icons
 * Bootstrap Library for styling buttons
 * We have multiple components e.g. (CreateAccountComponent, ManageAccountsComponent, DepositFundsComponent, TransferFundsComponent) in our application for which we have already configured routing.
-* There is an authorization service with two functions Login() & Logout, The login function is setting up a hardcoded user properties and storing it in local storage where as logout function is removing the user properties from local storage.
+* There is an authorization service with two functions `Login` & `Logout`, The login function is setting up a hardcoded user properties and storing it in local storage where as logout function is removing the user properties from local storage.
 * There is an login component with login button which calls the authorization service for login functionality. 
 * There is an Toolbar Component with logout button  which calls the authorization service for logout functionality.  
 * Angular Materials SideNav having links which are navigating to these components
@@ -64,50 +64,22 @@ export const environment = {
 };
  ```
 
-  ## Step 3: Configure AppModule
-  Open the `app.module.ts` file and replace the `NgModule` code as 
+  
+  ## Step 3: Setting Up msalConfig 
+  Create a new `auth-config.ts` file in app folder.
 
-  ```ts
-  @NgModule({
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    SharedModule,
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule, // CLI adds AppRoutingModule to the AppModule's imports array
-    MsalModule,
-  ],
-  providers: [TransactionService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true,
-    },
-    {
-      provide: MSAL_INSTANCE,
-      useFactory: MSALInstanceFactory,
-    },
-    {
-      provide: MSAL_GUARD_CONFIG,
-      useFactory: MSALGuardConfigFactory,
-    },
-    {
-      provide: MSAL_INTERCEPTOR_CONFIG,
-      useFactory: MSALInterceptorConfigFactory,
-    },
-    MsalService,
-    MsalGuard,
-    MsalBroadcastService],
-  bootstrap: [AppComponent, MsalRedirectComponent],
-})
-  ``` 
+  In this file we will configure 3 things as below :
 
-  ## Step 4: Setting Up msalConfig 
-  Create a new `auth-config.ts` file and paste the code as below :
+  * We will pass the configuration parameters to create an MSAL instance. 
+  * We will configure MSAL Interceptor that will inject token to all http communication.
+  * We will configure MSALGuard to restrict users to routes to a protected components.
+
+  We will replace `AuthGuard` with `MsalGuard` in app-routing.module.ts to protect DashboardComponent 
+```ts
+{ path: '', component: DashboardComponent, canActivate: [MsalGuard] }
+```
+
+We will configure the items MSAL things as below: 
 
   ```ts
 /**
@@ -214,9 +186,55 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
 }
   ```
 
-  ## Replace Login Component Functionality
+## Step 4: Configure AppModule
 
-  Open the `Login.Component.ts` and replace the LoginComponent code as below :
+  We will inject `MSAL_INSTANCE` , `MsalInterceptor` and `MSALGuardConfigFactory` in app.module.ts
+
+  ```ts
+  @NgModule({
+  declarations: [
+    AppComponent,
+  ],
+  imports: [
+    SharedModule,
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule, // CLI adds AppRoutingModule to the AppModule's imports array
+    MsalModule,
+  ],
+  providers: [TransactionService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true,
+    },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: MSALInstanceFactory,
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: MSALGuardConfigFactory,
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: MSALInterceptorConfigFactory,
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService],
+  bootstrap: [AppComponent, MsalRedirectComponent],
+})
+  ``` 
+
+
+  ## Step 5: Setting Up MSAL Login Functionality
+
+  In Login.Component.ts component we will inject the `MsalService` and will call the `loginRedirect` function on login button click event.
+
+  We will setup the `MsalBroadcastService` for Different events which are triggered by MSAL throughout the Auth process, Here we will filter the `LOGIN_SUCCESS` event and will decode the received token then set loggedInUser properties.
 
   ```ts
   /* eslint-disable no-underscore-dangle */
@@ -304,9 +322,9 @@ export default class LoginComponent implements OnInit {
 }
   ```
 
-  ## Replace Toolbar Component Functionality
+  ## Step 5: Setting Up MSAL Logout Functionality
 
-  Open the `toolbar.component.ts` file in shared folder and replace the code as below : 
+  We will inject the `MsalService` in `toolbar.component.ts` and will call the `logout` function on logout button click event. 
 
   ```ts
  import { Component, Input, OnInit, } from '@angular/core';
@@ -340,6 +358,5 @@ export default class ToolbarComponent implements OnInit {
 }
   ```
 
-Run the project and see its working as below 
+Run the project and see its working. 
  
- Need to add gif
