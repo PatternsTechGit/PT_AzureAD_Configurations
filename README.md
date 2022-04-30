@@ -14,24 +14,23 @@ Previously we scaffolded a new Angular application in which we have integrated
 * FontAwesome Library for icons
 * Bootstrap Library for styling buttons
 * We have multiple components e.g. (CreateAccountComponent, ManageAccountsComponent, DepositFundsComponent, TransferFundsComponent) in our application for which we have already configured routing.
-* There is an authorization service with two functions `Login` & `Logout`, The login function is setting up a hardcoded user properties and storing it in local storage where as logout function is removing the user properties from local storage.
-* There is an login component with login button which calls the authorization service for login functionality. 
-* There is an Toolbar Component with logout button  which calls the authorization service for logout functionality.  
-* Angular Materials SideNav having links which are navigating to these components
-* Client side authorization using Auth Guard to protect the routes.
-* Show & Hide Side Nav links based on the logged in User's role.
+* There is an authorization service with two functions `Login` & `Logout`, The login function is setting up a hardcoded user properties (Name,Email,Roles) and storing it in local storage where as logout function is removing that user object from local storage.
+* There is an login component with login button which calls the authorization service's login function. 
+* There is aToolbar Component with logout link which calls the authorization service' logout function.  
+* There is an Angular Materials SideNav that has links to the Components mentioned above but they are Shown or hidden based on logged in user's role.
 * We have already registered 2 apps in azure portal(BBankUI and BBankAPI), Created App Roles in BBankAPI, assigned them to users and exposed the API
-through a default scope and set permission of this API to BBankUI App
-   
+through a default scope and set permission of this API to BBankUI App.
 
 For more details about how to setup the active directory configurations in Azure portal see : https://github.com/PatternsTechGit/PT_AzureAD_Setup
 
-
 ## In this exercise
+
+Using the BBBankUI App that was registered in Azure AD Portal 
 
  * We will configure the Microsoft Authentication Library in our Angular project.
  * We will replace the fake authorization service with [MSAL service](https://azuread.github.io/microsoft-authentication-library-for-js/ref/msal-angular/classes/_msal_service_.msalservice.html) in login component
-  
+ * Using client BBBankAPI app that was registered in the Azure AD Portal we will configure Asp.net Core App to validate incoming token from Azure AD. 
+
 
  Whenever our Angular Single Page Application (SPA) clicks on the login button it will redirect to the Azure Active Directory page and after logging-in it will return back to our Angular application with token. The Angular application will inject the received token in every call to .Net Core API. The API will verify the received token from Azure AD and then  will send response.
 
@@ -44,7 +43,7 @@ For more details about how to setup the active directory configurations in Azure
  [Microsoft Authentication Library Angular](https://www.npmjs.com/package/@azure/msal-angular) (MSAL) enables Angular web applications to authenticate users using Azure AD work and school accounts (AAD), Microsoft personal accounts (MSA) and social identity providers like Facebook, Google, LinkedIn, Microsoft accounts, etc through Azure AD B2C service. It also enables your app to get tokens to access Microsoft Cloud services such as [Microsoft Graph](https://developer.microsoft.com/en-us/graph).
 
  To install the MSAL in angular application use the command below : 
- 
+
  ```
     npm install @azure/msal-browser @azure/msal-angular@latest
  ```
@@ -56,15 +55,15 @@ For more details about how to setup the active directory configurations in Azure
 export const environment = {
   production: false,
   apiUrlBase: 'http://localhost:5070/api/', // Url of the API this client app will try to access.
-  clientId: '66f42264-8560-4d8b-9670-c28bb9e1a0c4', // Application (client) ID of this Angular app that was registered as client app in Azure AD App Registrations.
-  authority: 'https://login.microsoftonline.com/0c087d99-9bb7-41d4-bd58-80846660b536', // The ID of the Tenant in which this client app was registered in Azure AD.
+  clientId: 'xxxxxx-8560-4d8b-9670-c28bb9e1a0c4', // Application (client) ID of this Angular app that was registered as client app in Azure AD App Registrations.
+  authority: 'https://login.microsoftonline.com/xxxxxx-9bb7-41d4-bd58-80846660b536', // The ID of the Tenant in which this client app was registered in Azure AD.
   redirectUri: 'http://localhost:4200', // Url where Azure AD will come back after Signing In Process completes. 
   postLogoutRedirectUri: 'http://localhost:4200/login', //Url where Azure AD will come back after Signing Out Process completes. 
-  defaultScope: 'api://bbbankapi/default',
+  defaultScope: 'api://xxxxxapi/xxxult',
 };
  ```
 
-  
+
   ## Step 3: Setting Up msalConfig 
   Create a new `auth-config.ts` file in app folder.
 
@@ -227,7 +226,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalBroadcastService],
   bootstrap: [AppComponent, MsalRedirectComponent],
 })
-  ``` 
+  ```
 
 
   ## Step 5: Setting Up MSAL Login Functionality
@@ -358,5 +357,52 @@ export default class ToolbarComponent implements OnInit {
 }
   ```
 
+  ## Step 6: Configuring Authentication in Asp.net core 
+
+To tell Asp.net core, form where it has to validate incoming token, we have to first add the required nuget package using the command. 
+
+```
+Intstall-Package Microsoft.AspNetCore.Authentication.AzureAD.UI
+```
+
+In the appsettings.json file add the following Configuration Section 
+
+```json
+,
+  "AzureAd": {
+    "Instance": "https://login.microsoftonline.com/",
+    "Domain": "xxxx.onmicrosoft.com", // Tenant URL
+    "TenantId": "xxxxx-9bb7-41d4-bd58-80846660b536", // Client ID of API App registered in Azure AD Portal
+    "ClientId": "api://xxxxxx", // Application ID URI from the Overview tab of API App registered in Azure AD Portal
+    "Audience": "api://xxxxxx" // Application ID URI from the Overview tab of API App registered in Azure AD Portal
+  }
+```
+
+Using this configuration settings we will add Authorization in Program.cs file 
+
+```c#
+builder.Services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
+    .AddAzureADBearer(options => configuration.Bind("AzureAd", options));
+```
+
+and finally add Authentication and Authorization in Asp.net Core's pipeline
+
+```c#
+....
+app.UseCors(MyAllowSpecificOrigins);
+// Order is important here
+app.UseAuthentication();
+app.UseAuthorization();
+// Order is important here
+app.MapControllers();
+....
+```
+
+Now that everything in place we can decorate the API Controller with Authorize attribute and expect roles being part of incoming Token.
+
+```c#
+[Authorize(Roles = "account-holder")]
+```
+
 Run the project and see its working. 
- 
+
