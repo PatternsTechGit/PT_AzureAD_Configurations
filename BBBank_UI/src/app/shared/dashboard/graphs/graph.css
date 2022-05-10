@@ -1,0 +1,166 @@
+/* Graph CSS */
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #ffffff;
+    background-clip: border-box;
+    border: 0.0625rem solid rgba(34, 42, 66, 0.05);
+    border-radius: 0.2857rem;
+  }
+  .category,
+  .card-category {
+    text-transform: capitalize;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+  }
+  
+  .card-category {
+    font-size: 0.75rem;
+  }
+  .card {
+    background: #27293d;
+    border: 0;
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .card .card-title {
+    margin-bottom: .75rem;
+  }
+  
+  .card .card-body {
+    padding: 15px;
+  }
+  
+  .card .card-body.table-full-width {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .card .card-body .card-title {
+    color: #ffffff;
+    text-transform: inherit;
+    font-weight: 300;
+    margin-bottom: .75rem;
+  }
+  
+  .card .card-body .card-description,
+  .card .card-body .card-category {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .card .card-header {
+    padding: 15px 15px 0;
+    border: 0;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .card .card-header:not([data-background-color]) {
+    background-color: transparent;
+  }
+  
+  .card .card-header .card-title {
+    color: #ffffff;
+    font-weight: 100;
+  }
+  
+  .card .card-header .card-category {
+    color: #9A9A9A;
+    margin-bottom: 5px;
+    font-weight: 300;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  @media (max-width: 767.98px) {
+    .card.card-chart .card-header .btn-group-toggle .tim-icons {
+      font-size: .875rem;
+      top: -1px;
+    }
+  }
+  
+  .card-chart {
+    overflow: hidden;
+  }
+  
+  .card-chart .card-header .card-title i {
+    font-size: 16px;
+    margin-right: 5px;
+    margin-bottom: 3px;
+  }
+  
+  .card-chart .card-header .card-category {
+    margin-bottom: 5px;
+  }
+  
+  .card-chart .card-body {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .card-chart .card-body .tab-space {
+    padding: 0;
+  }
+  
+  .card-chart .table {
+    margin-bottom: 0;
+  }
+  
+  .card-chart .table td {
+    border-top: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .card-chart .card-progress {
+    margin-top: 30px;
+    padding: 0 10px;
+  }
+  
+  .card-chart .chart-area {
+    height: 220px;
+    width: 100%;
+  }
+  
+  .card-chart .card-footer {
+    margin-top: 15px;
+  }
+  
+  .card-chart .card-footer .stats {
+    color: #9A9A9A;
+  }
+  
+  .card-chart .dropdown {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+  
+  .card-chart .dropdown .btn {
+    margin: 0;
+  }
+  
+  .card-chart.card-chart-pie .chart-area {
+    padding: 10px 0 25px;
+    height: auto;
+  }
+  
+  .card-chart.card-chart-pie .card-title {
+    margin-bottom: 10px;
+  }
+  
+  .card-chart.card-chart-pie .card-title i {
+    font-size: 1rem;
+  }

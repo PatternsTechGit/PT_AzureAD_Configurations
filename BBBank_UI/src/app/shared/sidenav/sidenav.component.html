@@ -1,0 +1,30 @@
+<div class="sidenav">
+    <div class="logo">
+        <a href="/" class="simple-text logo-mini">
+            <div class="logo-img">
+                <img src="./assets/images/angular2-logo-white.png" />
+            </div>
+        </a>
+        <a *ngIf="this.loggedInUserRole === 'account-holder'" href="/account-holder" class="simple-text logo-normal">
+            BBBank
+        </a>
+        <a *ngIf="this.loggedInUserRole === 'bank-manager'" href="/bank-manager" class="simple-text logo-normal">
+            BBBank
+        </a>
+    </div>
+    <ul class="nav">
+        <li *ngIf="this.loggedInUserRole === 'account-holder'"><a [routerLink]="['/account-holder']"><i class="active fas fa-chart-line"></i> Dashboard</a></li>
+        <li *ngIf="this.loggedInUserRole === 'bank-manager'"><a [routerLink]="['/account-holder']"><i class="active fas fa-chart-line"></i> Dashboard</a></li>
+        <div>
+            <li *ngIf="this.loggedInUserRole === 'account-holder'"><a
+                    [routerLink]="['account-holder/transfer-funds', { fromAccountId: '111', toAccountId: '222' }]"><i
+                        class="fas fa-random"></i> Transfer Funds</a></li>
+            <li *ngIf="this.loggedInUserRole === 'account-holder'"><a [routerLink]="['account-holder/deposit-funds']"><i
+                        class="fas fa-money-check-alt"></i>Deposit Funds</a></li>
+            <li *ngIf="this.loggedInUserRole === 'bank-manager'"><a [routerLink]="['bank-manager/create-account']"><i
+                        class="fas fa-user"></i> Create New Account</a></li>
+            <li *ngIf="this.loggedInUserRole === 'bank-manager'"><a [routerLink]="['bank-manager/manage-accounts']"><i
+                        class="fas fa-users"></i> Manage Accounts</a></li>
+        </div>
+    </ul>
+</div>

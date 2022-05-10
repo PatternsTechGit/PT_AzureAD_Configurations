@@ -1,0 +1,95 @@
+.sidenav {
+    background: #ec250d;
+    background: linear-gradient(0deg,#ec250d 0,#fd5d93 100%);
+    /* height: calc(100vh - 90px); */
+    height: 100%;
+    width: 230px;
+    display: block;
+    box-shadow: 0 0 45px 0 rgba(0,0,0,.6);
+    margin-right: 15px;
+    border-radius: 5px;
+    transition: .5s cubic-bezier(.685,.0473,.346,1);
+}
+.logo {
+    position: relative;
+    padding: 0.5rem 0.7rem;
+    z-index: 4;
+}
+.logo a.logo-mini {
+    opacity: 1;
+    float: left;
+    width: 34px;
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 12px;
+}
+.logo a.logo-normal {
+    display: block;
+    opacity: 1;
+    -webkit-transform: translate3d(0px, 0, 0);
+    -moz-transform: translate3d(0px, 0, 0);
+    -o-transform: translate3d(0px, 0, 0);
+    -ms-transform: translate3d(0px, 0, 0);
+    transform: translate3d(0px, 0, 0);
+}
+.logo:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 15px;
+    height: 1px;
+    width: calc(100% - 30px);
+    background: rgba(255, 255, 255, 0.5);
+}
+.logo .simple-text {
+    text-transform: uppercase;
+    padding: 0.5rem 0;
+    display: block;
+    white-space: nowrap;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 400;
+    line-height: 30px;
+    overflow: hidden;
+}
+.logo-img img {
+    width: 35px;
+}
+.nav li>a {
+    margin: 10px 15px 0;
+    border-radius: 30px;
+    color: rgba(255, 255, 255, .8);
+    width: 200px;
+    display: block;
+    text-decoration: none;
+    position: relative;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 300;
+    padding: 10px 15px;
+    line-height: 1.5rem;
+    transition: all .3s ease 0s;
+}
+.nav li>a i {
+    width: 20px;
+    margin-right: 10px;
+    font-size: 1.125rem;
+}
+.nav li>a:hover, .nav li>a:hover i {
+    color: rgba(255, 255, 255, 1);
+    transition: all .3s ease 0s;
+}
+.nav li.active>a:before {
+    content: " ";
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    top: 17px;
+    left: -2px;
+    background: #fff;
+    border-radius: 50%;
+}
+.mat-sidenav-container {
+    height: 100% !important;
+}

@@ -1,0 +1,27 @@
+.bg-dark {
+    background-color: #1e1e2f !important;
+}
+a.sidenav-button {
+    display: inline;
+    color: rgba(255, 255, 255, .5);
+    margin-right: 10px;
+    transition: all .3s ease 0s;
+}
+a.sidenav-button:hover {
+    color: rgba(255, 255, 255, .8);
+    transition: all .3s ease 0s;
+}
+.navbar .photo {
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    vertical-align: middle;
+    overflow: hidden;
+}
+.navbar .photo img {
+    width: 100%;
+}
+.ms-5 {
+    margin-left: 88% !important;
+  }
