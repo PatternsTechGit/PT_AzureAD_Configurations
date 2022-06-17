@@ -12,7 +12,7 @@ import DashboardComponent from './dashboard/dashboard.component';
 import LoginComponent from './login/login.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent, canActivate: [MsalGuard] },
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'create-account', component: CreateAccountComponent, canActivate: [AuthGuard] },
   { path: 'manage-accounts', component: ManageAccountsComponent, canActivate: [AuthGuard] },
   { path: 'deposit-funds', component: DepositFundsComponent, canActivate: [AuthGuard] },

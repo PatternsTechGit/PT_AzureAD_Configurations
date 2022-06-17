@@ -11,7 +11,8 @@
                     <div class="photo">
                         <img alt="Profile Photo" src="assets/images/anime3.png" />
                     </div>
-                    {{loggedInUser.firstName + ' ' + loggedInUser.lastName}}
+                    <div *ngIf="loggedInUser">
+                    {{loggedInUser.firstName + ' ' + loggedInUser.lastName}}</div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item">Profile</a>
