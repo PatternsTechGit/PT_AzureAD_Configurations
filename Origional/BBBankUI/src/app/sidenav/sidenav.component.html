@@ -1,0 +1,26 @@
+<div class="sidenav">
+    <div class="logo">
+        <a href="/" class="simple-text logo-mini">
+            <div class="logo-img">
+                <img src="./assets/images/angular2-logo-white.png" />
+            </div>
+        </a>
+        <a href="/" class="simple-text logo-normal">
+            BBBank
+        </a>
+    </div>
+    <ul class="nav">
+        <li><a [routerLink]="['/']"><i class="active fas fa-chart-line"></i> Dashboard</a></li>
+        <div>
+            <li *ngIf="this.loggedInUserRole == 'account-holder'"><a
+                    [routerLink]="['/transfer-funds', { fromAccountId: '111', toAccountId: '222' }]"><i
+                        class="fas fa-random"></i> Transfer Funds</a></li>
+            <li *ngIf="this.loggedInUserRole == 'account-holder'"><a [routerLink]="['/deposit-funds']"><i
+                        class="fas fa-money-check-alt"></i>Deposit Funds</a></li>
+            <li *ngIf="this.loggedInUserRole == 'bank-manager'"><a [routerLink]="['/create-account']"><i
+                        class="fas fa-user"></i> Create New Account</a></li>
+            <li *ngIf="this.loggedInUserRole == 'bank-manager'"><a [routerLink]="['/manage-accounts']"><i
+                        class="fas fa-users"></i> Manage Accounts</a></li>
+        </div>
+    </ul>
+</div>
