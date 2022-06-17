@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +12,25 @@ namespace Entities
         // String that uniquely identifies the account
         public string AccountNumber { get; set; }
 
-        //Title of teh account
+        //Title of the account
         public string AccountTitle { get; set; }
 
         //Available Balance of the account
         public decimal CurrentBalance { get; set; }
 
-        //Account's status
+        //Account's status 
         public AccountStatus AccountStatus { get; set; }
 
-        // User associated with this account
-        public User User { get; set; }
+        //Setting forignkey to resolve circular dependency
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
+
+
+        // One User might have 1 or more Accounts (1:Many relationship) 
+        public virtual User User { get; set; }
 
         // One Account might have 0 or more Transactions (1:Many relationship)
-        public ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 
     // Two posible statuses of an account
