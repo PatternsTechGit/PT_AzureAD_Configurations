@@ -31,7 +31,7 @@ namespace Infrastructure
                 AccountTitle = "Raas Masood",
                 CurrentBalance = 3500M,
                 AccountStatus = AccountStatus.Active,
-                User = this.Users[0]
+                UserId = "aa45e3c9-261d-41fe-a1b0-5b4dcf79cfd3" // Forign Key of User
             });
 
             // creating the collection for transaction list
