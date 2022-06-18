@@ -6,19 +6,22 @@ Azure AD is the identity platform to manage your internal and external users sec
 
 Azure Active Directory is a secure online authentication store, which can contain users and groups. Users have a username and a password which are used when you sign into an application that uses Azure AD for authentication. So for example all of the Microsoft Cloud services use Azure AD for authentication: Office 365, Dynamics 365 and Azure.
 
+--------
 
-## About this exercise
 
+## **About this exercise**
+
+## Previously
 Previously we scaffolded a new Angular application in which we have integrated 
 
-* FontAwesome Library for icons
-* Bootstrap Library for styling buttons
-* We have multiple components e.g. (CreateAccountComponent, ManageAccountsComponent, DepositFundsComponent, TransferFundsComponent) in our application for which we have already configured routing.
-* There is an authorization service with two functions `Login` & `Logout`, The login function is setting up a hardcoded user properties (Name,Email,Roles) and storing it in local storage where as logout function is removing that user object from local storage.
-* There is an login component with login button which calls the authorization service's login function. 
-* There is aToolbar Component with logout link which calls the authorization service' logout function.  
-* There is an Angular Materials SideNav that has links to the Components mentioned above but they are Shown or hidden based on logged in user's role.
-* We have already registered 2 apps in azure portal(BBankUI and BBankAPI), Created App Roles in BBankAPI, assigned them to users and exposed the API
+* **FontAwesome** Library for icons
+* **Bootstrap** Library for styling buttons
+* We have multiple components e.g. (*CreateAccountComponent, ManageAccountsComponent, DepositFundsComponent, TransferFundsComponent*) in our application for which we have already configured routing.
+* There is an **authorization service** with two functions `Login` & `Logout`, The login function is setting up a hardcoded user properties (Name,Email,Roles) and storing it in local storage where as logout function is removing that user object from local storage.
+* There is an *login component* with login button which calls the authorization service's login function. 
+* There is a *Toolbar Component* with logout link which calls the authorization service' logout function.  
+* There is an **Angular Materials SideNav** that has links to the Components mentioned above but they are Shown or hidden based on logged in user's role.
+* We have already registered 2 apps in azure portal(*BBankUI and BBankAPI*), Created App Roles in BBankAPI, assigned them to users and exposed the API
 through a default scope and set permission of this API to BBankUI App.
 
 For more details about how to setup the active directory configurations in Azure portal see : https://github.com/PatternsTechGit/PT_AzureAD_Setup
@@ -27,16 +30,18 @@ For more details about how to setup the active directory configurations in Azure
 
 Using the BBBankUI App that was registered in Azure AD Portal 
 
- * We will configure the Microsoft Authentication Library in our Angular project.
+ * We will configure the **Microsoft Authentication Library** in our Angular project.
  * We will replace the fake authorization service with [MSAL service](https://azuread.github.io/microsoft-authentication-library-for-js/ref/msal-angular/classes/_msal_service_.msalservice.html) in login component
- * Using client BBBankAPI app that was registered in the Azure AD Portal we will configure Asp.net Core App to validate incoming token from Azure AD. 
+ * Using Client App(*BBBankAPI*) that was registered in the Azure AD Portal, we will configure *Asp.net Core* App to validate incoming token from Azure AD.    
 
 
  Whenever our Angular Single Page Application (SPA) clicks on the login button it will redirect to the Azure Active Directory page and after logging-in it will return back to our Angular application with token. The Angular application will inject the received token in every call to .Net Core API. The API will verify the received token from Azure AD and then  will send response.
 
 ![SPA](https://user-images.githubusercontent.com/100709775/165463550-04481e0d-dcc1-4b1e-9021-7f0cf3784798.jpeg)
 
- Here are the steps to begin with 
+---------
+
+ Here are the steps to begin with. But before starting you can clone **Before** folder from our repository. It will give you a head start for this lab. 
 
  ## Step 1: Install Microsoft Authentication Library for Angular
 
@@ -47,9 +52,10 @@ Using the BBBankUI App that was registered in Azure AD Portal
  ```
     npm install @azure/msal-browser @azure/msal-angular@latest
  ```
+ --------
 
  ## Step 2: Setting Up Environment variable
- We will configure the app registration, clientID and other values in `environment.ts` as below :
+ We will configure the app registration, clientID and other values. For this go to *BBBankUI* and replace below given code in `environment.ts` file. Assign the values from Azure AD account we created in last lab. For more, you can [Read Here](https://github.com/PatternsTechGit/PT_AzureAD_Setup)
 
  ```ts
 export const environment = {
@@ -62,23 +68,27 @@ export const environment = {
   defaultScope: 'api://xxxxxapi/xxxult',
 };
  ```
-
+-------------
 
   ## Step 3: Setting Up msalConfig 
-  Create a new `auth-config.ts` file in app folder.
+  Create a new `auth-config.ts` file in *app folder*.
 
   In this file we will configure 3 things as below :
 
-  * We will pass the configuration parameters to create an MSAL instance. 
-  * We will configure MSAL Interceptor that will inject token to all http communication.
-  * We will configure MSALGuard to restrict users to routes to a protected components.
+  * We will pass the configuration parameters to create an *MSAL instance*. 
+  * We will configure *MSAL Interceptor* that will inject token to all http communication.
+  * We will configure *MSALGuard* to restrict users to routes to a protected components.
 
-  We will replace `AuthGuard` with `MsalGuard` in app-routing.module.ts to protect DashboardComponent 
+  We will replace `AuthGuard` with `MsalGuard` in *app-routing.module.ts* to protect DashboardComponent 
 ```ts
 { path: '', component: DashboardComponent, canActivate: [MsalGuard] }
 ```
+Import MSAL in the same file
+```ts
+import { MsalGuard } from '@azure/msal-angular'
+```
 
-We will configure the items MSAL things as below: 
+We will configure the MSAL items. For this go to *auth-config.ts* file we created and paste the below given code. 
 
   ```ts
 /**
@@ -90,7 +100,7 @@ We will configure the items MSAL things as below:
 
 import { MsalGuardConfiguration, MsalInterceptorConfiguration } from '@azure/msal-angular';
 import { LogLevel, Configuration, BrowserCacheLocation, InteractionType, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
-import environment from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -184,24 +194,33 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   };
 }
   ```
+  ----------
 
 ## Step 4: Configure AppModule
 
-  We will inject `MSAL_INSTANCE` , `MsalInterceptor` and `MSALGuardConfigFactory` in app.module.ts
+  We will inject `MSAL_INSTANCE` , `MsalInterceptor` and `MSALGuardConfigFactory` in *app.module.ts*
 
   ```ts
   @NgModule({
   declarations: [
     AppComponent,
+    DashboardComponent,
+    ManageAccountsComponent,
+    CreateAccountComponent,
+    DepositFundsComponent,
+    TransferFundsComponent,
+    ToolbarComponent,
+    SidenavComponent,
+    LoginComponent
   ],
   imports: [
-    SharedModule,
     BrowserModule,
     AppRoutingModule,
+    MatSidenavModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule, // CLI adds AppRoutingModule to the AppModule's imports array
-    MsalModule,
+    BrowserAnimationsModule,  // CLI adds AppRoutingModule to the AppModule's imports array
+    MsalModule
   ],
   providers: [TransactionService,
     {
@@ -224,14 +243,15 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalService,
     MsalGuard,
     MsalBroadcastService],
-  bootstrap: [AppComponent, MsalRedirectComponent],
+  bootstrap: [AppComponent,MsalRedirectComponent]
 })
+export class AppModule { }
   ```
-
+-------------
 
   ## Step 5: Setting Up MSAL Login Functionality
 
-  In Login.Component.ts component we will inject the `MsalService` and will call the `loginRedirect` function on login button click event.
+  In *login.component.ts* component we will inject the `MsalService` and will call the `loginRedirect` function on login button click event.
 
   We will setup the `MsalBroadcastService` for Different events which are triggered by MSAL throughout the Auth process, Here we will filter the `LOGIN_SUCCESS` event and will decode the received token then set loggedInUser properties.
 
@@ -243,8 +263,8 @@ import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, } from '@azure/msal-browser';
 import { Subject, takeUntil } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
-import jwt_decode from 'jwt-decode';
-import AppUser from '../shared/models/app-user';
+import jwt_decode from 'jwt-decode'; //Run 'npm install jwt-decode' to install the library.
+import { AppUser } from '../models/app-user';
 import { loginRequest } from '../auth-config';
 
 @Component({
@@ -252,7 +272,7 @@ import { loginRequest } from '../auth-config';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export default class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit {
   loggedInUser: AppUser;
 
   private readonly _destroying$ = new Subject<void>();
@@ -320,49 +340,50 @@ export default class LoginComponent implements OnInit {
   }
 }
   ```
-
-  ## Step 5: Setting Up MSAL Logout Functionality
+-------------
+  ## Step 6: Setting Up MSAL Logout Functionality
 
   We will inject the `MsalService` in `toolbar.component.ts` and will call the `logout` function on logout button click event. 
 
   ```ts
- import { Component, Input, OnInit, } from '@angular/core';
+ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MsalService } from '@azure/msal-angular';
-import AppUser from '../models/app-user';
+import { AppUser } from '../models/app-user';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.css'],
+  styleUrls: ['./toolbar.component.css']
 })
-export default class ToolbarComponent implements OnInit {
-  // @ts-ignore: Object is possibly 'null'.
+export class ToolbarComponent implements OnInit {
+
   @Input() inputSideNav: MatSidenav;
-
   loggedInUser?: AppUser;
-
-  constructor(private authService: MsalService) {
-
+  constructor(private authService: AuthService) {
+    
   }
 
   ngOnInit(): void {
     this.loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   }
-
+  
   logout(): void {
     localStorage.removeItem('loggedInUser');
     this.authService.logout();
   }
+
 }
   ```
+  --------------
 
-  ## Step 6: Configuring Authentication in Asp.net core 
+  ## Step 7: Configuring Authentication in Asp.net core 
 
 To tell Asp.net core, form where it has to validate incoming token, we have to first add the required nuget package using the command. 
 
 ```
-Intstall-Package Microsoft.AspNetCore.Authentication.AzureAD.UI
+Install-Package Microsoft.AspNetCore.Authentication.AzureAD.UI
 ```
 
 In the appsettings.json file add the following Configuration Section 
@@ -378,31 +399,73 @@ In the appsettings.json file add the following Configuration Section
   }
 ```
 
-Using this configuration settings we will add Authorization in Program.cs file 
+Using this configuration settings we will add Authorization in *Program.cs* file 
 
 ```c#
 builder.Services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
     .AddAzureADBearer(options => configuration.Bind("AzureAd", options));
 ```
+We will add a variable
+```csharp
+var configuration = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json")
+               .Build();
+```
 
 and finally add Authentication and Authorization in Asp.net Core's pipeline
 
-```c#
-....
+```csharp
 app.UseCors(MyAllowSpecificOrigins);
 // Order is important here
 app.UseAuthentication();
 app.UseAuthorization();
 // Order is important here
 app.MapControllers();
-....
 ```
 
-Now that everything in place we can decorate the API Controller with Authorize attribute and expect roles being part of incoming Token.
+
+
+
+Next we will decorate *GetLast12MonthBalances* function of **TransactionController** with *Authorize* attribute and **account-holder** role as this function will return transactions of a single account. For this paste the below given code 
 
 ```c#
 [Authorize(Roles = "account-holder")]
 ```
 
-Run the project and see its working. 
+--------------
 
+## Step 8: Getting User ID and Display User Data
+
+This is the final step of this lab where we will login our user and display their data. Follow these steps to complete this task
+
+- Run your API and UI
+- To run your UI in local environment use this url http://localhost:4200/login
+
+
+- CLick the login button   
+![](/Before/BBBankUI/src/assets/images/1.png)
+- At this point it will ask you to authorize via Microsoft OAuth 
+![](/Before/BBBankUI/src/assets/images/2.jpg)
+
+- After successfully logging in you must see this screen. 
+![](/Before/BBBankUI/src/assets/images/4.jpg)
+
+Here you are successfully logged in but you will notice that no user data(balances, years, etc) is displaying at the moment. This is because we have not sent UserID to our API for authorization.
+
+In this lab we will provide this UserID manually to our API. Follow these steps for this task:
+
+- *Right click* and *inspect* this dashboard
+- Go to *Applications* and check the local storage http://localhost:4200
+- Here we have stored userID in in variable *loggedInUser*
+![](/Before/BBBankUI/src/assets/images/5.jpg)
+- Copy this LoggedIn User-ID
+- In API code go to *BBBankContext.cs* file and replace this userId in the variable **AzureADUserID**
+```csharp
+private string AzureADUserID = "0e34f8a4-e09b-4f9f-9765-d062exxxxxx";
+```
+
+- Finally logout from portal completely and run API/UI again. You will see all the data of your loggedIn user. 
+![](/Before/BBBankUI/src/assets/images/3.jpg)
+
+-------------

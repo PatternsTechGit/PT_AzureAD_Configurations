@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AppUser } from '../models/app-user';
 import { LineGraphData } from '../models/line-graph-data';
 import TransactionService from '../services/transaction.service';
 
@@ -7,21 +8,24 @@ import TransactionService from '../services/transaction.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export default class DashboardComponent implements OnInit {
+export default class DashboardComponent implements  AfterViewInit {
   lineGraphData: LineGraphData;
+  loggedInUser: AppUser;
+  constructor(private transactionService: TransactionService) {}
 
-  constructor(private transactionService: TransactionService) { }
-
-  ngOnInit(): void {
-    // this.transactionService
-    //   .getLast12MonthBalances('37846734-172e-4149-8cec-6f43d1eb3f60')
-    //   .subscribe({
-    //     next: (data) => {
-    //       this.lineGraphData = data;
-    //     },
-    //     error: (error) => {
-    //       console.log(error.responseException.exceptionMessage);
-    //     },
-    //   });
+  ngAfterViewInit(): void {
+    this.loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (this.loggedInUser) {
+      this.transactionService
+        .getLast12MonthBalances(this.loggedInUser.id)
+        .subscribe({
+          next: (data) => {
+            this.lineGraphData = data;
+          },
+          error: (error) => {
+            console.log(error.responseException.exceptionMessage);
+          },
+        });
+    }
   }
 }
